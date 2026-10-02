@@ -1,0 +1,78 @@
+{
+    "version": 1,
+    "name": "Dice Input",
+    "maps": [
+        {
+            "name": "Dice",
+            "id": "770f9cb0-3d76-430d-a9e3-1740e409856f",
+            "actions": [
+                {
+                    "name": "Roll",
+                    "type": "Button",
+                    "id": "5ab45fb2-4876-41f6-93a4-57e183c30a63",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SubmitDices",
+                    "type": "Button",
+                    "id": "586e887b-dfa5-452f-8ffa-b59c802db353",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Restart",
+                    "type": "Button",
+                    "id": "54f901c0-dd6f-4c71-9eeb-0fb73fcb6afb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "15104aa3-e65f-466d-b6aa-ad4a34968785",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Roll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3d276133-0719-4b3f-9b06-ad2ac3d1c54b",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SubmitDices",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8e443fe3-80a9-4e05-9f4b-2f03f555f9b5",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
