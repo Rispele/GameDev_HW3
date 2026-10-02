@@ -74,7 +74,7 @@ namespace Game.Services
 
 		public bool Submit()
 		{
-			if (pickedDices.Count == 0 || !countStrategy.IsValidPick(pickedDices))
+			if (!countStrategy.IsValidPick(pickedDices))
 			{
 				return false;
 			}

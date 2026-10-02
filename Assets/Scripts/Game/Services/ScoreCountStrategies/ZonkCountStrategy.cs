@@ -22,7 +22,13 @@ namespace Game.Services.ScoreCountStrategies
 
 		public bool IsValidPick(IEnumerable<Dice> dices)
 		{
-			var leftDices = Count(dices, out _);
+			var diceArray = dices as Dice[] ?? dices.ToArray();
+			if (diceArray.Length == 0)
+			{
+				return false;
+			}
+
+			var leftDices = Count(diceArray, out _);
 
 			return !leftDices.Any();
 		}
@@ -41,7 +47,7 @@ namespace Game.Services.ScoreCountStrategies
 				currentStepScores += 1150;
 				return Enumerable.Empty<int>();
 			}
-			
+
 			if (HasKeys(countToNumbers, 1, 2, 3, 4, 5))
 			{
 				currentStepScores += 650;
