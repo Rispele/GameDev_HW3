@@ -36,20 +36,22 @@ namespace Game.Services.ScoreCountStrategies
 
 			currentStepScores = 0;
 
-			switch (countToNumbers.Count)
+			if (HasKeys(countToNumbers, 1, 2, 3, 4, 5))
 			{
-				case 5 when !countToNumbers.ContainsKey(6):
-					currentStepScores += 500;
-					RemoveKeys(countToNumbers, 1, 2, 3, 4, 5);
-					break;
-				case 5 when !countToNumbers.ContainsKey(1):
-					currentStepScores += 750;
-					RemoveKeys(countToNumbers, 2, 3, 4, 5, 6);
-					break;
-				case 6:
-					currentStepScores += 1000;
-					RemoveKeys(countToNumbers, 1, 2, 3, 4, 5, 6);
-					break;
+				currentStepScores += 650;
+				RemoveDices(countToNumbers, removeAll: false, 1, 2, 3, 4, 5);
+			}
+
+			if (HasKeys(countToNumbers, 2, 3, 4, 5, 6))
+			{
+				currentStepScores += 800;
+				RemoveDices(countToNumbers, removeAll: false, 2, 3, 4, 5, 6);
+			}
+
+			if (HasKeys(countToNumbers, 1, 2, 3, 4, 5, 6))
+			{
+				currentStepScores += 1150;
+				return Enumerable.Empty<int>();
 			}
 
 			currentStepScores += CountRepeatedDices(countToNumbers, 1, 100, 1000);
@@ -61,11 +63,28 @@ namespace Game.Services.ScoreCountStrategies
 			return countToNumbers.Keys;
 		}
 
-		private void RemoveKeys(Dictionary<int, int> countToNumbers, params int[] keys)
+		private bool HasKeys(Dictionary<int, int> countToNumbers, params int[] keys)
+		{
+			return keys.All(countToNumbers.ContainsKey);
+		}
+
+		private void RemoveDices(Dictionary<int, int> countToNumbers, bool removeAll, params int[] keys)
 		{
 			foreach (var key in keys)
 			{
-				countToNumbers.Remove(key);
+				if (!countToNumbers.TryGetValue(key, out var count))
+				{
+					continue;
+				}
+
+				if (!removeAll && count > 1)
+				{
+					countToNumbers[key] = count - 1;
+				}
+				else
+				{
+					countToNumbers.Remove(key);
+				}
 			}
 		}
 
@@ -79,7 +98,7 @@ namespace Game.Services.ScoreCountStrategies
 				return 0;
 			}
 
-			RemoveKeys(countToNumbers, diceValue);
+			RemoveDices(countToNumbers, removeAll: true, diceValue);
 
 			return GetValueForRepeatedDices(diceScoreForThreeOrMoreReps, count2);
 		}
@@ -95,7 +114,7 @@ namespace Game.Services.ScoreCountStrategies
 				return 0;
 			}
 
-			RemoveKeys(countToNumbers, diceValue);
+			RemoveDices(countToNumbers, removeAll: true, diceValue);
 
 			if (count is 1 or 2)
 			{
