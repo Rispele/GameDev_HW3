@@ -44,8 +44,8 @@ namespace Game.Services
 		public void Start()
 		{
 			var isValidSate = CheckCurrentState(DiceGameCycleState.None)
-			                         || CheckCurrentState(DiceGameCycleState.NoCombinations)
-			                         || CheckCurrentState(DiceGameCycleState.Finish);
+			                  || CheckCurrentState(DiceGameCycleState.NoCombinations)
+			                  || CheckCurrentState(DiceGameCycleState.Finish);
 
 			if (!isValidSate)
 			{
@@ -101,7 +101,10 @@ namespace Game.Services
 				return;
 			}
 
-			pickController.Submit();
+			if (!pickController.Submit())
+			{
+				return;
+			}
 
 			if (finish)
 			{

@@ -74,11 +74,11 @@ namespace Game.Services
 
 		public bool Submit()
 		{
-			if (pickedDices.Count == 0)
+			if (pickedDices.Count == 0 || !countStrategy.IsValidPick(pickedDices))
 			{
 				return false;
 			}
-			
+
 			foreach (var diceRoller in dices.Active)
 			{
 				diceRoller.Dice.AllowChoosing = false;
@@ -96,7 +96,7 @@ namespace Game.Services
 
 		public bool AnyCombinationOnTable()
 		{
-			return countStrategy.Count(dices.Active.Select(t => t.Dice)) > 0;
+			return countStrategy.HasCombinations(dices.Active.Select(t => t.Dice));
 		}
 	}
 }
