@@ -17,7 +17,6 @@ namespace Dices.Rolling
 		private new Rigidbody rigidbody = null!;
 
 		public event Action<DiceRoller> Rolled;
-		public event Action<DiceRoller> StartRolling;
 
 		private void Awake()
 		{
@@ -39,7 +38,6 @@ namespace Dices.Rolling
 			var eventToRaise = (newState, State) switch
 			{
 				(DiceRollState.Rolled, DiceRollState.Rolling) => Rolled,
-				(DiceRollState.Rolling, DiceRollState.Rolled) => StartRolling,
 				_ => null
 			};
 

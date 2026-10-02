@@ -39,7 +39,7 @@ namespace Game.Services
 				return;
 			}
 
-			if (diceContainer.GetScores().Any(t => t is null))
+			if (diceContainer.Active.Select(t => t.Dice.GetCurrentScore()).Any(t => t is null))
 			{
 				DicesRollFailure?.Invoke(diceContainer);
 			}
