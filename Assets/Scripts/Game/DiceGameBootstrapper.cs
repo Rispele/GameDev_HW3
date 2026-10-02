@@ -103,7 +103,7 @@ namespace Game
 				DiceGameCycleState.PreparedToRoll => "Крути на пробел!",
 				DiceGameCycleState.Roll => "Крутим...",
 				DiceGameCycleState.CountScores =>
-					"Выбирай кости, которые хочешь зачесть на этом шаге! (q - подтвердить завершить, e - подтвердить и продолжить)",
+					"Выбирай кости, которые хочешь зачесть на этом шаге! (q - подтвердить и завершить, e - подтвердить и продолжить)",
 				DiceGameCycleState.NoCombinations => "Нет комбинаций, игра окончана! (Q - начать заново)",
 				DiceGameCycleState.InvalidRoll => "Крутка не пошла, попробуй ещё раз!",
 				DiceGameCycleState.Finish => "Игра окончена! (Q - начать заново)",
