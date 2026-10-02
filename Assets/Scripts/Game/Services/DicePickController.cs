@@ -72,8 +72,13 @@ namespace Game.Services
 			CurrentTurnScoresChanged?.Invoke(CurrentScores + currentStepScores);
 		}
 
-		public void Submit()
+		public bool Submit()
 		{
+			if (pickedDices.Count == 0)
+			{
+				return false;
+			}
+			
 			foreach (var diceRoller in dices.Active)
 			{
 				diceRoller.Dice.AllowChoosing = false;
@@ -85,6 +90,8 @@ namespace Game.Services
 			}
 
 			CurrentScores += currentStepScores;
+
+			return true;
 		}
 
 		public bool AnyCombinationOnTable()
