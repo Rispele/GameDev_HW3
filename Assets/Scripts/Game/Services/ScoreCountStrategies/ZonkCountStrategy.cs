@@ -36,6 +36,12 @@ namespace Game.Services.ScoreCountStrategies
 
 			currentStepScores = 0;
 
+			if (HasKeys(countToNumbers, 1, 2, 3, 4, 5, 6))
+			{
+				currentStepScores += 1150;
+				return Enumerable.Empty<int>();
+			}
+			
 			if (HasKeys(countToNumbers, 1, 2, 3, 4, 5))
 			{
 				currentStepScores += 650;
@@ -46,12 +52,6 @@ namespace Game.Services.ScoreCountStrategies
 			{
 				currentStepScores += 800;
 				RemoveDices(countToNumbers, removeAll: false, 2, 3, 4, 5, 6);
-			}
-
-			if (HasKeys(countToNumbers, 1, 2, 3, 4, 5, 6))
-			{
-				currentStepScores += 1150;
-				return Enumerable.Empty<int>();
 			}
 
 			currentStepScores += CountRepeatedDices(countToNumbers, 1, 100, 1000);
