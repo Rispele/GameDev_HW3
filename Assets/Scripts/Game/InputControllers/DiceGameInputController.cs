@@ -2,9 +2,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Game
+namespace Game.InputControllers
 {
-	public class DiceGameInputController : MonoBehaviour
+	public class DiceGameInputController : MonoBehaviour, IInputController
 	{
 		private DiceInput diceInput;
 

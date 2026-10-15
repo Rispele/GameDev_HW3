@@ -50,6 +50,8 @@ namespace Dices
 
 		private void OnMouseEnter()
 		{
+			Debug.Log("Курсор зашел на объект: " + gameObject.name);
+		
 			if (IsChosen)
 			{
 				return;

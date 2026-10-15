@@ -1,4 +1,6 @@
-﻿using Game.Models;
+﻿using System;
+using Game.InputControllers;
+using Game.Models;
 using Game.Services;
 using Game.Services.ScoreCountStrategies;
 using TMPro;
@@ -8,12 +10,13 @@ namespace Game
 {
 	public class DiceGameBootstrapper : MonoBehaviour
 	{
-		[SerializeField] private DiceGameInputController diceInput;
+		[SerializeField] private MonoBehaviour inputController;
 		[SerializeField] private DicesSpawner dicesSpawner;
 		[SerializeField] private TextMeshProUGUI totalScores;
 		[SerializeField] private TextMeshProUGUI currentTurnScores;
 		[SerializeField] private TextMeshProUGUI message;
 
+		private IInputController diceInput;
 		private DiceContainer dices;
 		private DicesRollController diceRollController;
 		private DicePickController dicePickController;
@@ -21,7 +24,9 @@ namespace Game
 
 		private void OnEnable()
 		{
+			diceInput = inputController as IInputController ?? throw new InvalidOperationException("Input controller is not an IInputController");
 			dices = dicesSpawner.Dices;
+			
 			diceRollController = new DicesRollController(dices);
 			dicePickController = new DicePickController(dices, new ZonkCountStrategy());
 			gameCycle = new DiceGameCycle(
