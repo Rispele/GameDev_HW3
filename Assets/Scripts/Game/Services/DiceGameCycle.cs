@@ -13,10 +13,10 @@ namespace Game.Services
 		public DiceGameCycleState State { get; private set; } = DiceGameCycleState.None;
 		private int totalScores;
 
-		public int TotalScores
+		private int TotalScores
 		{
 			get => totalScores;
-			private set
+			set
 			{
 				if (totalScores == value)
 				{

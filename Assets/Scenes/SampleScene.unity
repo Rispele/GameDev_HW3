@@ -3330,50 +3330,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1653482826}
   m_CullTransparentMesh: 1
---- !u!1 &1670075340
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1670075342}
-  - component: {fileID: 1670075341}
-  m_Layer: 0
-  m_Name: DiceGameInputController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1670075341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1670075340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6571d3e6bcef424eb71ab3e5ec2d3e01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.DiceGameInputController
---- !u!4 &1670075342
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1670075340}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1682315570
 GameObject:
   m_ObjectHideFlags: 0
@@ -4259,6 +4215,9 @@ MonoBehaviour:
   totalScores: {fileID: 1388250364}
   currentTurnScores: {fileID: 1227546517}
   message: {fileID: 1162890043}
+  rollButton: {fileID: 2134331247}
+  submitButton: {fileID: 1233831359}
+  finishButton: {fileID: 1104973425}
 --- !u!1 &2044139943
 GameObject:
   m_ObjectHideFlags: 0
@@ -4914,7 +4873,6 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 1670075342}
   - {fileID: 312760305}
   - {fileID: 388449532}
   - {fileID: 1993210953}

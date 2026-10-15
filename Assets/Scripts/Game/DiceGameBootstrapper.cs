@@ -5,6 +5,7 @@ using Game.Services;
 using Game.Services.ScoreCountStrategies;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game
 {
@@ -15,6 +16,9 @@ namespace Game
 		[SerializeField] private TextMeshProUGUI totalScores;
 		[SerializeField] private TextMeshProUGUI currentTurnScores;
 		[SerializeField] private TextMeshProUGUI message;
+		[SerializeField] private Button rollButton;
+		[SerializeField] private Button submitButton;
+		[SerializeField] private Button finishButton;
 
 		private IInputController diceInput;
 		private DiceContainer dices;
@@ -26,7 +30,7 @@ namespace Game
 		{
 			diceInput = inputController as IInputController ?? throw new InvalidOperationException("Input controller is not an IInputController");
 			dices = dicesSpawner.Dices;
-			
+
 			diceRollController = new DicesRollController(dices);
 			dicePickController = new DicePickController(dices, new ZonkCountStrategy());
 			gameCycle = new DiceGameCycle(
@@ -105,17 +109,43 @@ namespace Game
 		{
 			var messageToShow = state switch
 			{
-				DiceGameCycleState.PreparedToRoll => "Крути на пробел!",
+				DiceGameCycleState.PreparedToRoll => "Крути!",
 				DiceGameCycleState.Roll => "Крутим...",
-				DiceGameCycleState.CountScores =>
-					"Выбирай кости, которые хочешь зачесть на этом шаге! (q - подтвердить и завершить, e - подтвердить и продолжить)",
-				DiceGameCycleState.NoCombinations => "Нет комбинаций, игра окончана! (Q - начать заново)",
+				DiceGameCycleState.CountScores => "Выбирай кости, которые хочешь зачесть на этом шаге!",
+				DiceGameCycleState.NoCombinations => "Нет комбинаций, игра окончана!",
 				DiceGameCycleState.InvalidRoll => "Крутка не пошла, попробуй ещё раз!",
-				DiceGameCycleState.Finish => "Игра окончена! (Q - начать заново)",
+				DiceGameCycleState.Finish => "Игра окончена!",
 				_ => "..."
 			};
 
 			message.text = messageToShow;
+
+			switch (state)
+			{
+				case DiceGameCycleState.None:
+					break;
+				case DiceGameCycleState.PreparedToRoll:
+					rollButton.interactable = true;
+					submitButton.interactable = false;
+					finishButton.interactable = false;
+					break;
+				case DiceGameCycleState.Roll:
+					rollButton.interactable = false;
+					break;
+				case DiceGameCycleState.InvalidRoll:
+					rollButton.interactable = true;
+					break;
+				case DiceGameCycleState.CountScores:
+					submitButton.interactable = true;
+					finishButton.interactable = true;
+					break;
+				case DiceGameCycleState.NoCombinations:
+				case DiceGameCycleState.Finish:
+					finishButton.interactable = true;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(state), state, null);
+			}
 		}
 
 		private void OnDiceRollControllerOnDicesRollFailure(DiceContainer _)
