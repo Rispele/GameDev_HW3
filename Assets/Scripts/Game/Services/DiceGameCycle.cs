@@ -128,7 +128,7 @@ namespace Game.Services
 		{
 			foreach (var diceRoller in dices.Where(t => !t.gameObject.activeSelf))
 			{
-				diceRoller.Dice.Reset();
+				// diceRoller.Dice.Reset();
 				diceRoller.gameObject.SetActive(true);
 			}
 		}

@@ -52,20 +52,20 @@ namespace Game.Services
 
 			foreach (var diceRoller in dices.Active)
 			{
-				diceRoller.Dice.AllowChoosing = true;
+				// diceRoller.Dice.AllowChoosing = true;
 			}
 		}
 
 		public void PickDice(Dice dice)
 		{
-			if (dice.IsChosen)
-			{
-				pickedDices.Add(dice);
-			}
-			else
-			{
-				pickedDices.Remove(dice);
-			}
+			// if (dice.IsChosen)
+			// {
+			// 	pickedDices.Add(dice);
+			// }
+			// else
+			// {
+			// 	pickedDices.Remove(dice);
+			// }
 
 			currentStepScores = countStrategy.Count(pickedDices);
 
@@ -81,7 +81,7 @@ namespace Game.Services
 
 			foreach (var diceRoller in dices.Active)
 			{
-				diceRoller.Dice.AllowChoosing = false;
+				// diceRoller.Dice.AllowChoosing = false;
 			}
 
 			foreach (var pickedDice in pickedDices)

@@ -3,6 +3,7 @@
 	public enum DiceGameCycleState
 	{
 		None,
+		Initiating,
 		PreparedToRoll,
 		Roll,
 		InvalidRoll,

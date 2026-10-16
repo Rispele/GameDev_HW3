@@ -44,7 +44,7 @@ namespace Game
 
 			foreach (var diceRoller in dices)
 			{
-				diceRoller.Dice.Clicked += dicePickController.PickDice;
+				// diceRoller.Dice.Clicked += dicePickController.PickDice;
 			}
 
 			diceInput.OnSubmitDice += OnDiceInputOnOnSubmitDice;
@@ -65,7 +65,7 @@ namespace Game
 
 			foreach (var diceRoller in dices)
 			{
-				diceRoller.Dice.Clicked -= dicePickController.PickDice;
+				// diceRoller.Dice.Clicked -= dicePickController.PickDice;
 			}
 
 			diceInput.OnSubmitDice -= OnDiceInputOnOnSubmitDice;

@@ -149,6 +149,8 @@ GameObject:
   - component: {fileID: 309204298066427270}
   - component: {fileID: 4502927528579310738}
   - component: {fileID: 2183033242841564841}
+  - component: {fileID: 7568207409930625882}
+  - component: {fileID: 7991102050732099801}
   m_Layer: 0
   m_Name: DIce
   m_TagString: Untagged
@@ -294,6 +296,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32853da5814945bbb17ca89ae1c0f2ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dice
+  diceFaces:
+  - {fileID: 8970436679152843167}
+  - {fileID: 3107527227774092949}
+  - {fileID: 8537931262893863473}
+  - {fileID: 1004727478692336575}
+  - {fileID: 280134634667090888}
+  - {fileID: 4464927360619822409}
+  diceRoller: {fileID: 2183033242841564841}
+  diceHighlighter: {fileID: 7568207409930625882}
+  diceSelect: {fileID: 7991102050732099801}
 --- !u!114 &2183033242841564841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,6 +319,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Roller.DiceRoller
   <State>k__BackingField: 0
+--- !u!114 &7568207409930625882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4512378086380764559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 841ca92c26ea46ee9daa2c634045f3be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Dices.DiceHighlighter
+  renderer: {fileID: 5982285485378480236}
+--- !u!114 &7991102050732099801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4512378086380764559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f4ade5457ae455b91e51a4e3a649aa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Dices.DiceSelect
 --- !u!1 &5529488255290842869
 GameObject:
   m_ObjectHideFlags: 0

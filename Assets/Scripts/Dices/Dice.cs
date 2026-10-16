@@ -1,9 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using Dices.Rolling;
 using UnityEngine;
 
 namespace Dices
 {
+	[RequireComponent(typeof(DiceRoller))]
+	[RequireComponent(typeof(DiceHighlighter))]
+	[RequireComponent(typeof(DiceSelect))]
 	public class Dice : MonoBehaviour
 	{
 		private static readonly int[] OppositeFaces =
@@ -16,17 +19,14 @@ namespace Dices
 			1
 		};
 
-		private static readonly int EmissionId = Shader.PropertyToID("_EmissionColor");
-		private static readonly Color HighlightEmission = Color.darkKhaki;
+		[SerializeField] private DiceFace[] diceFaces;
+		[SerializeField] private DiceRoller diceRoller;
+		[SerializeField] private DiceHighlighter diceHighlighter;
+		[SerializeField] private DiceSelect diceSelect;
 
-		private DiceFace[] diceFaces;
-		private MaterialPropertyBlock materialPropertyBlock;
-		private new Renderer renderer;
-
-		public bool IsChosen { get; private set; }
-		public bool AllowChoosing { get; set; }
-
-		public event Action<Dice> Clicked;
+		public DiceRoller DiceRoller => diceRoller;
+		public DiceHighlighter DiceHighlighter => diceHighlighter;
+		public DiceSelect DiceSelect => diceSelect;
 
 		public int? GetCurrentScore()
 		{
@@ -35,64 +35,25 @@ namespace Dices
 			return triggeredFace ? GetOppositeFace(triggeredFace.FaceNumber) : null;
 		}
 
-		public void Reset()
-		{
-			IsChosen = false;
-			SetHighlighted(IsChosen);
-		}
-
-		private void Awake()
-		{
-			renderer = GetComponent<Renderer>();
-			materialPropertyBlock = new MaterialPropertyBlock();
-			diceFaces = GetComponentsInChildren<DiceFace>();
-		}
-
-		private void OnMouseEnter()
-		{
-			Debug.Log("Курсор зашел на объект: " + gameObject.name);
-		
-			if (IsChosen)
-			{
-				return;
-			}
-
-			SetHighlighted(true);
-		}
-
-		private void OnMouseDown()
-		{
-			if (!AllowChoosing)
-			{
-				return;
-			}
-
-			IsChosen = !IsChosen;
-			SetHighlighted(IsChosen);
-
-			Clicked?.Invoke(this);
-		}
-
-		private void OnMouseExit()
-		{
-			if (IsChosen)
-			{
-				return;
-			}
-
-			SetHighlighted(false);
-		}
-
-		private void SetHighlighted(bool on)
-		{
-			renderer.GetPropertyBlock(materialPropertyBlock);
-			materialPropertyBlock.SetColor(EmissionId, on ? HighlightEmission : Color.black);
-			renderer.SetPropertyBlock(materialPropertyBlock);
-		}
-
 		private static int GetOppositeFace(int number)
 		{
 			return OppositeFaces[number - 1];
 		}
+
+		private void OnEnable()
+		{
+			diceSelect.OnGoingToSelect += SetHighlightedLevel1;
+			diceSelect.OnSelected += SetHighlightedLevel2;
+		}
+
+		private void OnDisable()
+		{
+			diceSelect.OnGoingToSelect -= SetHighlightedLevel1;
+			diceSelect.OnSelected -= SetHighlightedLevel2;
+		}
+
+		private void SetHighlightedLevel1(bool on) => diceHighlighter.SetHighlighted(false, on);
+
+		private void SetHighlightedLevel2(bool on) => diceHighlighter.SetHighlighted(on, diceSelect.IsGoingToSelect);
 	}
 }
