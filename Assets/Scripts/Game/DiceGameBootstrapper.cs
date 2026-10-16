@@ -1,5 +1,4 @@
-﻿using System;
-using Game.InputControllers;
+﻿using Game.InputControllers;
 using Game.Models;
 using Game.Services;
 using Game.Services.ScoreCountStrategies;
@@ -10,14 +9,16 @@ namespace Game
 {
 	public class DiceGameBootstrapper : MonoBehaviour
 	{
-		[SerializeField] private MonoBehaviour inputController;
-		[SerializeField] private DicesSpawner dicesSpawner;
+		[SerializeField] private DiceGameSettingsController diceSettingsController;
+		[SerializeField] private DiceGameUIInputController inputController;
 
 		[SerializeField] private TextMeshProUGUI totalScores;
 		[SerializeField] private TextMeshProUGUI currentTurnScores;
 		[SerializeField] private TextMeshProUGUI message;
 
-		private IInputController diceInput;
+		[SerializeField] private DiceGameSettings diceSettings;
+		[SerializeField] private DicesSpawner dicesSpawner;
+
 		private DiceContainer dices;
 		private DicesRollController diceRollController;
 		private DicePickController dicePickController;
@@ -25,7 +26,6 @@ namespace Game
 
 		private void OnEnable()
 		{
-			diceInput = inputController as IInputController ?? throw new InvalidOperationException("Input controller is not an IInputController");
 			// dices = dicesSpawner.Dices;
 
 			diceRollController = new DicesRollController(dices);
@@ -35,11 +35,12 @@ namespace Game
 				diceRollController,
 				dicePickController);
 
-			gameCycle.OnDiceGameStateChanged += diceInput.OnGameCycleOnOnDiceGameStateChanged;
+			gameCycle.OnDiceGameStateChanged += inputController.OnDiceGameStateChanged;
+			gameCycle.OnDiceGameStateChanged += diceSettings.OnDiceGameStateChanged;
 
-			diceInput.OnRoll += gameCycle.Roll;
-			diceInput.OnSubmitDice += OnDiceInputOnOnSubmitDice;
-			diceInput.OnRestart += OnDiceInputOnOnRestart;
+			inputController.OnRoll += gameCycle.Roll;
+			inputController.OnSubmitDice += OnDiceInputOnOnSubmitDice;
+			inputController.OnRestart += OnDiceInputOnOnRestart;
 
 			diceRollController.DicesRollSuccess += OnDiceRollControllerOnDicesRollSuccess;
 			diceRollController.DicesRollFailure += OnDiceRollControllerOnDicesRollFailure;
@@ -54,16 +55,17 @@ namespace Game
 			dicePickController.CurrentTurnScoresChanged += OnGameCycleOnCurrentTurnScoresChanged;
 			gameCycle.OnDiceGameStateChanged += OnGameCycleOnOnDiceGameStateChanged;
 
-			gameCycle.Start();
+			diceSettingsController.OnSettingsSubmitted += OnDiceSettingsControllerOnOnSettingsSubmitted;
 		}
 
 		private void OnDisable()
 		{
-			gameCycle.OnDiceGameStateChanged -= diceInput.OnGameCycleOnOnDiceGameStateChanged;
+			gameCycle.OnDiceGameStateChanged -= inputController.OnDiceGameStateChanged;
+			gameCycle.OnDiceGameStateChanged -= diceSettings.OnDiceGameStateChanged;
 
-			diceInput.OnRoll -= gameCycle.Roll;
-			diceInput.OnSubmitDice -= OnDiceInputOnOnSubmitDice;
-			diceInput.OnRestart -= OnDiceInputOnOnRestart;
+			inputController.OnRoll -= gameCycle.Roll;
+			inputController.OnSubmitDice -= OnDiceInputOnOnSubmitDice;
+			inputController.OnRestart -= OnDiceInputOnOnRestart;
 
 			diceRollController.DicesRollSuccess -= OnDiceRollControllerOnDicesRollSuccess;
 			diceRollController.DicesRollFailure -= OnDiceRollControllerOnDicesRollFailure;
@@ -78,6 +80,10 @@ namespace Game
 			gameCycle.OnDiceGameStateChanged -= OnGameCycleOnOnDiceGameStateChanged;
 
 			diceRollController.Dispose();
+
+			diceSettingsController.OnSettingsSubmitted -= OnDiceSettingsControllerOnOnSettingsSubmitted;
+
+			gameCycle.Initialize();
 		}
 
 		private void OnDiceInputOnOnSubmitDice()
@@ -93,7 +99,7 @@ namespace Game
 			}
 			else
 			{
-				gameCycle.Start();
+				gameCycle.Initialize();
 			}
 		}
 
@@ -131,6 +137,11 @@ namespace Game
 		private void OnDiceRollControllerOnDicesRollSuccess(DiceContainer _)
 		{
 			gameCycle.StopRolling(true);
+		}
+
+		private void OnDiceSettingsControllerOnOnSettingsSubmitted()
+		{
+			gameCycle.Start();
 		}
 	}
 }

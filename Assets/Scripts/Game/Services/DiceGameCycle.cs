@@ -41,14 +41,16 @@ namespace Game.Services
 			this.pickController = pickController;
 		}
 
-		public void Start() => WithStateTransition(() =>
+		public void Initialize() => WithStateTransition(() =>
 			{
 				TotalScores = 0;
 				pickController.PrepareForTurn();
 				ResetAllDices();
 			},
-			DiceGameCycleState.PreparedToRoll,
+			DiceGameCycleState.Initiating,
 			DiceGameCycleState.None, DiceGameCycleState.NoCombinations, DiceGameCycleState.Finish);
+
+		public void Start() => WithStateTransition(() => { }, DiceGameCycleState.PreparedToRoll, DiceGameCycleState.Initiating);
 
 		public void Roll() => WithStateTransition(() => { rollController.Roll(); },
 			DiceGameCycleState.Roll,

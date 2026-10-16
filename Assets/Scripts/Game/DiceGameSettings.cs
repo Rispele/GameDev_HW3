@@ -63,6 +63,21 @@ namespace Game
 		public event Action<DiceGameSettingsSnapshot> OnSettingsChanged;
 		public event Action<bool> OnAllowEditingChanged;
 
+		public void OnDiceGameStateChanged(DiceGameCycleState state)
+		{
+			AllowEditing = state switch
+			{
+				DiceGameCycleState.Initiating => true,
+				DiceGameCycleState.PreparedToRoll
+					or DiceGameCycleState.Roll
+					or DiceGameCycleState.InvalidRoll
+					or DiceGameCycleState.CountScores
+					or DiceGameCycleState.NoCombinations
+					or DiceGameCycleState.Finish => false,
+				_ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
+			};
+		}
+
 		private void WithEditingHooks(Action action)
 		{
 			if (!AllowEditing)

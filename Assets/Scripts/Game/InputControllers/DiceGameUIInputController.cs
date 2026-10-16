@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Game.InputControllers
 {
-	public class DiceGameUIInputController : MonoBehaviour, IInputController
+	public class DiceGameUIInputController : MonoBehaviour
 	{
 		[SerializeField] private Button rollButton;
 		[SerializeField] private Button submitButton;
@@ -15,11 +15,16 @@ namespace Game.InputControllers
 		public event Action OnSubmitDice;
 		public event Action OnRestart;
 
-		public void OnGameCycleOnOnDiceGameStateChanged(DiceGameCycleState state)
+		public void OnDiceGameStateChanged(DiceGameCycleState state)
 		{
 			switch (state)
 			{
 				case DiceGameCycleState.None:
+					break;
+				case DiceGameCycleState.Initiating:
+					rollButton.interactable = false;
+					submitButton.interactable = false;
+					finishButton.interactable = false;
 					break;
 				case DiceGameCycleState.PreparedToRoll:
 					rollButton.interactable = true;
@@ -28,16 +33,23 @@ namespace Game.InputControllers
 					break;
 				case DiceGameCycleState.Roll:
 					rollButton.interactable = false;
+					submitButton.interactable = false;
+					finishButton.interactable = false;
 					break;
 				case DiceGameCycleState.InvalidRoll:
 					rollButton.interactable = true;
+					submitButton.interactable = false;
+					finishButton.interactable = false;
 					break;
 				case DiceGameCycleState.CountScores:
+					rollButton.interactable = false;
 					submitButton.interactable = true;
 					finishButton.interactable = true;
 					break;
 				case DiceGameCycleState.NoCombinations:
 				case DiceGameCycleState.Finish:
+					rollButton.interactable = false;
+					submitButton.interactable = false;
 					finishButton.interactable = true;
 					break;
 				default:

@@ -1,6 +1,8 @@
-﻿using Game.Models;
+﻿using System;
+using Game.Models;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.InputControllers
 {
@@ -9,8 +11,11 @@ namespace Game.InputControllers
 		[SerializeField] private TMP_InputField diceCountInputField;
 		[SerializeField] private TMP_InputField scoresToDrawInputField;
 		[SerializeField] private TMP_InputField scoresToWinInputField;
+		[SerializeField] private Button submitSettingsButton;
 
 		[SerializeField] private DiceGameSettings diceGameSettings;
+
+		public event Action OnSettingsSubmitted;
 
 		private void OnEnable()
 		{
@@ -20,6 +25,8 @@ namespace Game.InputControllers
 
 			diceGameSettings.OnSettingsChanged += OnSettingsChanged;
 			diceGameSettings.OnAllowEditingChanged += OnAllowEditingChanged;
+
+			submitSettingsButton.onClick.AddListener(SubmitSettings);
 		}
 
 		private void OnDisable()
@@ -30,6 +37,8 @@ namespace Game.InputControllers
 
 			diceGameSettings.OnSettingsChanged -= OnSettingsChanged;
 			diceGameSettings.OnAllowEditingChanged -= OnAllowEditingChanged;
+
+			submitSettingsButton.onClick.RemoveListener(SubmitSettings);
 		}
 
 		private void OnDiceCountEndEdit(string text) => diceGameSettings.DicesCount = int.Parse(text);
@@ -50,6 +59,12 @@ namespace Game.InputControllers
 			diceCountInputField.interactable = allow;
 			scoresToDrawInputField.interactable = allow;
 			scoresToWinInputField.interactable = allow;
+			submitSettingsButton.interactable = allow;
+		}
+
+		private void SubmitSettings()
+		{
+			OnSettingsSubmitted?.Invoke();
 		}
 	}
 }
