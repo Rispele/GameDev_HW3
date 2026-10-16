@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Dices;
 using Dices.Rolling.RollingStrategies;
 using Game.Models;
@@ -11,40 +13,35 @@ namespace Game
 		[SerializeField] private Transform diceParent;
 		[SerializeField] private Dice dicePrefab;
 
-		[field: SerializeField, Range(1, 12)] public int DiceCount { get; set; } = 6;
+		private readonly List<DiceContainer> containersToDestroy = new();
 
-		public DiceContainer Dices { get; private set; }
-		
-		public void OnEnable()
+		public DiceContainer Spawn(int diceCount, IRollingStrategy diceRollingStrategy)
 		{
-			if (Dices is not null)
+			if (diceCount is < 1 or > 6)
 			{
-				return;
+				throw new ArgumentException("Dice count must be between 1 and 6");
 			}
 
-			var dices = new Dice[DiceCount];
-
-			for (var i = 0; i < DiceCount; i++)
+			var dices = new List<Dice>();
+			for (var i = 0; i < diceCount; i++)
 			{
 				var dice = Instantiate(dicePrefab, new Vector3(i * 2, 1, i * 2), Quaternion.identity);
 
 				dice.transform.SetParent(diceParent);
-				dice.DiceRoller.RollingStrategy = new CenterDirectedRollingStrategy();
+				dice.DiceRoller.RollingStrategy = diceRollingStrategy;
 
-				dices[i] = dice;
+				dices.Add(dice);
 			}
 
-			Dices = new DiceContainer(dices);
+			var diceContainer = new DiceContainer(dices.ToArray());
+			containersToDestroy.Add(diceContainer);
+
+			return diceContainer;
 		}
 
 		private void OnDisable()
 		{
-			if (Dices == null)
-			{
-				return;
-			}
-
-			foreach (var dice in Dices.Where(t => t))
+			foreach (var dice in containersToDestroy.SelectMany(container => container.Where(dice => dice)))
 			{
 				Destroy(dice.gameObject);
 			}
