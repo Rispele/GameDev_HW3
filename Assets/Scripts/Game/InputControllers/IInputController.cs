@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Models;
 
 namespace Game.InputControllers
 {
@@ -7,5 +8,7 @@ namespace Game.InputControllers
 		public event Action OnRoll;
 		public event Action OnSubmitDice;
 		public event Action OnRestart;
+
+		public void OnGameCycleOnOnDiceGameStateChanged(DiceGameCycleState state);
 	}
 }

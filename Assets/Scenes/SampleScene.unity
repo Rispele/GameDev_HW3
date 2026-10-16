@@ -703,6 +703,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ebdc9f49cf2c9e43ab270be71da5013, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.InputControllers.DiceGameUIInputController
+  rollButton: {fileID: 2134331247}
+  submitButton: {fileID: 1233831359}
+  finishButton: {fileID: 1104973425}
 --- !u!4 &312760305
 Transform:
   m_ObjectHideFlags: 0
@@ -2326,20 +2329,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1104973426}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 312760304}
-        m_TargetAssemblyTypeName: Game.InputControllers.DiceGameUIInputController,
-          Assembly-CSharp
-        m_MethodName: Restart
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1104973426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2735,20 +2725,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1233831360}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 312760304}
-        m_TargetAssemblyTypeName: Game.InputControllers.DiceGameUIInputController,
-          Assembly-CSharp
-        m_MethodName: SubmitDice
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1233831360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4909,20 +4886,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2134331248}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 312760304}
-        m_TargetAssemblyTypeName: Game.InputControllers.DiceGameUIInputController,
-          Assembly-CSharp
-        m_MethodName: Roll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2134331248
 MonoBehaviour:
   m_ObjectHideFlags: 0

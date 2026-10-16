@@ -5,7 +5,6 @@ using Game.Services;
 using Game.Services.ScoreCountStrategies;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game
 {
@@ -17,9 +16,6 @@ namespace Game
 		[SerializeField] private TextMeshProUGUI totalScores;
 		[SerializeField] private TextMeshProUGUI currentTurnScores;
 		[SerializeField] private TextMeshProUGUI message;
-		[SerializeField] private Button rollButton;
-		[SerializeField] private Button submitButton;
-		[SerializeField] private Button finishButton;
 
 		private IInputController diceInput;
 		private DiceContainer dices;
@@ -39,7 +35,12 @@ namespace Game
 				diceRollController,
 				dicePickController);
 
+			gameCycle.OnDiceGameStateChanged += diceInput.OnGameCycleOnOnDiceGameStateChanged;
+
 			diceInput.OnRoll += gameCycle.Roll;
+			diceInput.OnSubmitDice += OnDiceInputOnOnSubmitDice;
+			diceInput.OnRestart += OnDiceInputOnOnRestart;
+
 			diceRollController.DicesRollSuccess += OnDiceRollControllerOnDicesRollSuccess;
 			diceRollController.DicesRollFailure += OnDiceRollControllerOnDicesRollFailure;
 
@@ -48,8 +49,6 @@ namespace Game
 				// diceRoller.Dice.Clicked += dicePickController.PickDice;
 			}
 
-			diceInput.OnSubmitDice += OnDiceInputOnOnSubmitDice;
-			diceInput.OnRestart += OnDiceInputOnOnRestart;
 
 			gameCycle.TotalScoresChanged += OnGameCycleOnTotalScoresChanged;
 			dicePickController.CurrentTurnScoresChanged += OnGameCycleOnCurrentTurnScoresChanged;
@@ -60,7 +59,12 @@ namespace Game
 
 		private void OnDisable()
 		{
+			gameCycle.OnDiceGameStateChanged -= diceInput.OnGameCycleOnOnDiceGameStateChanged;
+
 			diceInput.OnRoll -= gameCycle.Roll;
+			diceInput.OnSubmitDice -= OnDiceInputOnOnSubmitDice;
+			diceInput.OnRestart -= OnDiceInputOnOnRestart;
+
 			diceRollController.DicesRollSuccess -= OnDiceRollControllerOnDicesRollSuccess;
 			diceRollController.DicesRollFailure -= OnDiceRollControllerOnDicesRollFailure;
 
@@ -68,9 +72,6 @@ namespace Game
 			{
 				// diceRoller.Dice.Clicked -= dicePickController.PickDice;
 			}
-
-			diceInput.OnSubmitDice -= OnDiceInputOnOnSubmitDice;
-			diceInput.OnRestart -= OnDiceInputOnOnRestart;
 
 			gameCycle.TotalScoresChanged -= OnGameCycleOnTotalScoresChanged;
 			dicePickController.CurrentTurnScoresChanged -= OnGameCycleOnCurrentTurnScoresChanged;
@@ -120,33 +121,6 @@ namespace Game
 			};
 
 			message.text = messageToShow;
-
-			switch (state)
-			{
-				case DiceGameCycleState.None:
-					break;
-				case DiceGameCycleState.PreparedToRoll:
-					rollButton.interactable = true;
-					submitButton.interactable = false;
-					finishButton.interactable = false;
-					break;
-				case DiceGameCycleState.Roll:
-					rollButton.interactable = false;
-					break;
-				case DiceGameCycleState.InvalidRoll:
-					rollButton.interactable = true;
-					break;
-				case DiceGameCycleState.CountScores:
-					submitButton.interactable = true;
-					finishButton.interactable = true;
-					break;
-				case DiceGameCycleState.NoCombinations:
-				case DiceGameCycleState.Finish:
-					finishButton.interactable = true;
-					break;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(state), state, null);
-			}
 		}
 
 		private void OnDiceRollControllerOnDicesRollFailure(DiceContainer _)

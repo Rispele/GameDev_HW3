@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Models;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +12,11 @@ namespace Game.InputControllers
 		public event Action OnRoll;
 		public event Action OnSubmitDice;
 		public event Action OnRestart;
+
+		public void OnGameCycleOnOnDiceGameStateChanged(DiceGameCycleState state)
+		{
+			throw new NotImplementedException();
+		}
 
 		private void OnEnable()
 		{
