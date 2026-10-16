@@ -1,6 +1,7 @@
 ﻿using System;
 using Game.Models;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game
 {
@@ -76,6 +77,17 @@ namespace Game
 					or DiceGameCycleState.Finish => false,
 				_ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
 			};
+		}
+
+		public void Randomize()
+		{
+			DicesCount = Random.Range(MinDicesCount, MaxDicesCount);
+
+			var factor1 = Math.Min(DicesCount, 6) - 4.5;
+			var factor2 = DicesCount / 6.0;
+
+			ScoresToDraw = (int)(Math.Pow(2, factor1) * Random.Range(300, 450) * factor2);
+			ScoresToWin = (int)(Math.Pow(2, factor1) * Random.Range(500, 650) * factor2);
 		}
 
 		private void WithEditingHooks(Action action)

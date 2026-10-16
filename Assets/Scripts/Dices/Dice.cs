@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Dices.Rolling;
 using UnityEngine;
 
@@ -25,8 +26,9 @@ namespace Dices
 		[SerializeField] private DiceSelect diceSelect;
 
 		public DiceRoller DiceRoller => diceRoller;
-		public DiceHighlighter DiceHighlighter => diceHighlighter;
 		public DiceSelect DiceSelect => diceSelect;
+
+		public event Action<Dice, bool> OnSelected;
 
 		public int? GetCurrentScore()
 		{
@@ -44,16 +46,23 @@ namespace Dices
 		{
 			diceSelect.OnGoingToSelect += SetHighlightedLevel1;
 			diceSelect.OnSelected += SetHighlightedLevel2;
+			diceSelect.OnSelected += DiceSelected;
 		}
 
 		private void OnDisable()
 		{
 			diceSelect.OnGoingToSelect -= SetHighlightedLevel1;
 			diceSelect.OnSelected -= SetHighlightedLevel2;
+			diceSelect.OnSelected -= DiceSelected;
 		}
 
 		private void SetHighlightedLevel1(bool on) => diceHighlighter.SetHighlighted(false, on);
 
 		private void SetHighlightedLevel2(bool on) => diceHighlighter.SetHighlighted(on, diceSelect.IsGoingToSelect);
+
+		private void DiceSelected(bool selected)
+		{
+			OnSelected?.Invoke(this, selected);
+		}
 	}
 }

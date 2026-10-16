@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Dices;
 using Dices.Rolling.RollingStrategies;
 using Game.Models;
@@ -17,15 +15,10 @@ namespace Game
 
 		public DiceContainer Spawn(int diceCount, IRollingStrategy diceRollingStrategy)
 		{
-			if (diceCount is < 1 or > 6)
-			{
-				throw new ArgumentException("Dice count must be between 1 and 6");
-			}
-
 			var dices = new List<Dice>();
 			for (var i = 0; i < diceCount; i++)
 			{
-				var dice = Instantiate(dicePrefab, new Vector3(i * 2, 1, i * 2), Quaternion.identity);
+				var dice = Instantiate(dicePrefab, new Vector3(0, 1, 0), Quaternion.identity);
 
 				dice.transform.SetParent(diceParent);
 				dice.DiceRoller.RollingStrategy = diceRollingStrategy;
@@ -39,11 +32,21 @@ namespace Game
 			return diceContainer;
 		}
 
-		private void OnDisable()
+		public void Destroy(DiceContainer dices)
 		{
-			foreach (var dice in containersToDestroy.SelectMany(container => container.Where(dice => dice)))
+			foreach (var dice in dices.Alive)
 			{
 				Destroy(dice.gameObject);
+			}
+
+			containersToDestroy.Remove(dices);
+		}
+
+		private void OnDisable()
+		{
+			foreach (var container in containersToDestroy)
+			{
+				Destroy(container);
 			}
 		}
 	}

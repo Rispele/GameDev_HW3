@@ -9,8 +9,8 @@ namespace Game.Services
 	{
 		private readonly DiceContainer diceContainer;
 
-		public event Action<DiceContainer> DicesRollSuccess;
-		public event Action<DiceContainer> DicesRollFailure;
+		public event Action DicesRollSuccess;
+		public event Action DicesRollFailure;
 
 		public DicesRollController(DiceContainer diceContainer)
 		{
@@ -41,11 +41,11 @@ namespace Game.Services
 
 			if (diceContainer.Active.Select(t => t.GetCurrentScore()).Any(t => t is null))
 			{
-				DicesRollFailure?.Invoke(diceContainer);
+				DicesRollFailure?.Invoke();
 			}
 			else
 			{
-				DicesRollSuccess?.Invoke(diceContainer);
+				DicesRollSuccess?.Invoke();
 			}
 		}
 

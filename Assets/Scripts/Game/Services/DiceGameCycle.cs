@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Linq;
+using Dices.Rolling.RollingStrategies;
 using Game.Models;
+using Game.Services.ScoreCountStrategies;
+using JetBrains.Annotations;
 
 namespace Game.Services
 {
 	public class DiceGameCycle
 	{
-		private readonly DiceContainer dices;
-		private readonly DicesRollController rollController;
-		private readonly DicePickController pickController;
+		private readonly DiceGameSettings gameSettings;
+		private readonly DicesSpawner spawner;
+		private readonly IScoresCountStrategy countStrategy;
 
-		public DiceGameCycleState State { get; private set; } = DiceGameCycleState.None;
+		[CanBeNull] private DiceContainer diceContainer;
+		[CanBeNull] private DicesRollController rollController;
+		[CanBeNull] private DicePickController pickController;
+
+
 		private int totalScores;
 
 		private int TotalScores
@@ -28,71 +35,108 @@ namespace Game.Services
 			}
 		}
 
+		private int currentScores;
+
+		private int CurrentScores
+		{
+			get => currentScores;
+			set
+			{
+				if (currentScores == value)
+				{
+					return;
+				}
+
+				currentScores = value;
+				CurrentScoresChanged?.Invoke(currentScores);
+			}
+		}
+
+		public DiceGameCycleState State { get; private set; } = DiceGameCycleState.None;
+
+		public DiceGameResult GameResult => TotalScores < gameSettings.ScoresToDraw
+			? DiceGameResult.Lose
+			: TotalScores < gameSettings.ScoresToWin
+				? DiceGameResult.Draw
+				: DiceGameResult.Win;
+
 		public event Action<DiceGameCycleState> OnDiceGameStateChanged;
+		public event Action<int> CurrentScoresChanged;
 		public event Action<int> TotalScoresChanged;
 
 		public DiceGameCycle(
-			DiceContainer dices,
-			DicesRollController rollController,
-			DicePickController pickController)
+			DiceGameSettings gameSettings,
+			DicesSpawner spawner,
+			IScoresCountStrategy countStrategy)
 		{
-			this.dices = dices;
-			this.rollController = rollController;
-			this.pickController = pickController;
+			this.gameSettings = gameSettings;
+			this.spawner = spawner;
+			this.countStrategy = countStrategy;
 		}
 
 		public void Initialize() => WithStateTransition(() =>
 			{
+				if (diceContainer is not null)
+				{
+					spawner.Destroy(diceContainer);
+					diceContainer = null;
+				}
+
 				TotalScores = 0;
-				pickController.PrepareForTurn();
-				ResetAllDices();
+				CurrentScores = 0;
+				gameSettings.AllowEditing = true;
+				gameSettings.Randomize();
 			},
 			DiceGameCycleState.Initiating,
 			DiceGameCycleState.None, DiceGameCycleState.NoCombinations, DiceGameCycleState.Finish);
 
-		public void Start() => WithStateTransition(() => { }, DiceGameCycleState.PreparedToRoll, DiceGameCycleState.Initiating);
+		public void Start() => WithStateTransition(() =>
+			{
+				gameSettings.AllowEditing = false;
 
-		public void Roll() => WithStateTransition(() => { rollController.Roll(); },
+				diceContainer = spawner.Spawn(gameSettings.DicesCount, new CenterDirectedRollingStrategy());
+			},
+			DiceGameCycleState.PreparedToRoll,
+			DiceGameCycleState.Initiating);
+
+		public void Roll() => WithStateTransition(() =>
+			{
+				if (diceContainer!.AnyDiceRolling)
+				{
+					return;
+				}
+
+				rollController = new DicesRollController(diceContainer);
+
+				rollController.DicesRollFailure += StopRollingWithFailure;
+				rollController.DicesRollSuccess += StopRollingWithSuccess;
+
+				rollController.Roll();
+			},
 			DiceGameCycleState.Roll,
 			DiceGameCycleState.PreparedToRoll, DiceGameCycleState.InvalidRoll);
 
-		public void StopRolling(bool successfully) => WithStateValidation(() =>
-			{
-				if (!successfully)
-				{
-					ChangeState(DiceGameCycleState.InvalidRoll);
-					return;
-				}
-
-				if (!pickController.AnyCombinationOnTable())
-				{
-					ChangeState(DiceGameCycleState.NoCombinations);
-					return;
-				}
-
-				pickController.PrepareForStep();
-				ChangeState(DiceGameCycleState.CountScores);
-			},
-			DiceGameCycleState.Roll);
-
 		public void SubmitDices(bool finish) => WithStateValidation(() =>
 			{
-				if (!pickController.Submit())
+				if (!pickController!.Submit())
 				{
 					return;
 				}
+
+				pickController.Dispose();
+				pickController = null;
+
+				TotalScores += CurrentScores;
+				CurrentScores = 0;
 
 				if (finish)
 				{
-					TotalScores += pickController.CurrentScores;
 					ChangeState(DiceGameCycleState.Finish);
 					return;
 				}
 
-				if (!dices.Active.Any())
+				if (!diceContainer!.Active.Any())
 				{
-					TotalScores += pickController.CurrentScores;
-
 					GoToNextTurn();
 				}
 				else
@@ -101,6 +145,33 @@ namespace Game.Services
 				}
 			},
 			DiceGameCycleState.CountScores);
+
+		private void StopRollingWithFailure() => WithStateTransition(() => { rollController?.Dispose(); },
+			DiceGameCycleState.InvalidRoll,
+			DiceGameCycleState.Roll);
+
+		private void StopRollingWithSuccess() => WithStateValidation(() =>
+			{
+				rollController?.Dispose();
+				rollController = null;
+
+				if (!countStrategy.HasCombinations(diceContainer!.Active))
+				{
+					ChangeState(DiceGameCycleState.NoCombinations);
+					return;
+				}
+
+				pickController = new DicePickController(diceContainer, countStrategy);
+				pickController.ScoresChanged += OnCurrentScoresChanged;
+
+				ChangeState(DiceGameCycleState.CountScores);
+			},
+			DiceGameCycleState.Roll);
+
+		private void OnCurrentScoresChanged(int scores)
+		{
+			CurrentScores = scores;
+		}
 
 		private void WithStateTransition(Action action, DiceGameCycleState stateToGo, params DiceGameCycleState[] allowedStates)
 		{
@@ -120,19 +191,13 @@ namespace Game.Services
 
 		private void GoToNextTurn()
 		{
-			pickController.PrepareForTurn();
-			ResetAllDices();
+			foreach (var dice in diceContainer!)
+			{
+				dice.DiceSelect.ResetState();
+				dice.gameObject.SetActive(true);
+			}
 
 			ChangeState(DiceGameCycleState.PreparedToRoll);
-		}
-
-		private void ResetAllDices()
-		{
-			foreach (var diceRoller in dices.Where(t => !t.gameObject.activeSelf))
-			{
-				// diceRoller.Dice.Reset();
-				diceRoller.gameObject.SetActive(true);
-			}
 		}
 
 		private void ChangeState(DiceGameCycleState newState)

@@ -18,6 +18,7 @@ namespace Dices
 			IsSelected = false;
 			IsGoingToSelect = false;
 
+			OnGoingToSelect?.Invoke(false);
 			OnSelected?.Invoke(false);
 		}
 

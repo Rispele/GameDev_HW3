@@ -19,6 +19,10 @@ namespace Game.InputControllers
 
 		private void OnEnable()
 		{
+			diceCountInputField.text = diceGameSettings.DicesCount.ToString();
+			scoresToDrawInputField.text = diceGameSettings.ScoresToDraw.ToString();
+			scoresToWinInputField.text = diceGameSettings.ScoresToWin.ToString();
+
 			diceCountInputField.onEndEdit.AddListener(OnDiceCountEndEdit);
 			scoresToDrawInputField.onEndEdit.AddListener(OnScoresToDrawEndEdit);
 			scoresToWinInputField.onEndEdit.AddListener(OnScoresToWinEndEdit);

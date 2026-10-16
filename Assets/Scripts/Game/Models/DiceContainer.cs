@@ -8,19 +8,20 @@ namespace Game.Models
 {
 	public class DiceContainer : IEnumerable<Dice>
 	{
-		private readonly Dice[] dicesRollers;
+		private readonly Dice[] dices;
 
-		public bool AnyDiceRolling => dicesRollers.Any(t => t.DiceRoller.State is DiceRollState.Rolling);
-		public IEnumerable<Dice> Active => dicesRollers.Where(t => t.gameObject.activeSelf);
+		public IEnumerable<Dice> Alive => dices.Where(dice => dice);
+		public bool AnyDiceRolling => Alive.Any(t => t.DiceRoller.State is DiceRollState.Rolling);
+		public IEnumerable<Dice> Active => Alive.Where(t => t.gameObject.activeSelf);
 
-		public DiceContainer(Dice[] dicesRollers)
+		public DiceContainer(Dice[] dices)
 		{
-			this.dicesRollers = dicesRollers;
+			this.dices = dices;
 		}
 
 		public IEnumerator<Dice> GetEnumerator()
 		{
-			return dicesRollers.AsEnumerable().GetEnumerator();
+			return Alive.AsEnumerable().GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

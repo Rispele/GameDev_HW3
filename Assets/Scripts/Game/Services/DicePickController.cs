@@ -6,26 +6,13 @@ using Game.Services.ScoreCountStrategies;
 
 namespace Game.Services
 {
-	public class DicePickController
+	public class DicePickController : IDisposable
 	{
 		private readonly DiceContainer dices;
 		private readonly IScoresCountStrategy countStrategy;
 		private readonly HashSet<Dice> pickedDices = new();
 
-		private int currentStepScores;
-		private int currentScores;
-
-		public int CurrentScores
-		{
-			get => currentScores;
-			private set
-			{
-				currentScores = value;
-				CurrentTurnScoresChanged?.Invoke(CurrentScores);
-			}
-		}
-
-		public event Action<int> CurrentTurnScoresChanged;
+		public event Action<int> ScoresChanged;
 
 		public DicePickController(
 			DiceContainer dices,
@@ -33,42 +20,8 @@ namespace Game.Services
 		{
 			this.dices = dices;
 			this.countStrategy = countStrategy;
-		}
 
-		public void PrepareForTurn()
-		{
-			CurrentScores = 0;
-			currentStepScores = 0;
-
-			pickedDices.Clear();
-		}
-
-		public void PrepareForStep()
-		{
-			currentStepScores = 0;
-
-			pickedDices.Clear();
-
-			foreach (var diceRoller in dices.Active)
-			{
-				// diceRoller.Dice.AllowChoosing = true;
-			}
-		}
-
-		public void PickDice(Dice dice)
-		{
-			// if (dice.IsChosen)
-			// {
-			// 	pickedDices.Add(dice);
-			// }
-			// else
-			// {
-			// 	pickedDices.Remove(dice);
-			// }
-
-			currentStepScores = countStrategy.Count(pickedDices);
-
-			CurrentTurnScoresChanged?.Invoke(CurrentScores + currentStepScores);
+			SubscribeEvents();
 		}
 
 		public bool Submit()
@@ -78,9 +31,9 @@ namespace Game.Services
 				return false;
 			}
 
-			foreach (var diceRoller in dices.Active)
+			foreach (var dice in dices.Active)
 			{
-				// diceRoller.Dice.AllowChoosing = false;
+				dice.DiceSelect.AllowSelect = false;
 			}
 
 			foreach (var pickedDice in pickedDices)
@@ -88,14 +41,39 @@ namespace Game.Services
 				pickedDice.gameObject.SetActive(false);
 			}
 
-			CurrentScores += currentStepScores;
-
 			return true;
 		}
 
-		public bool AnyCombinationOnTable()
+		private void PickDice(Dice dice, bool selected)
 		{
-			return countStrategy.HasCombinations(dices.Active);
+			if (selected)
+			{
+				pickedDices.Add(dice);
+			}
+			else
+			{
+				pickedDices.Remove(dice);
+			}
+
+			ScoresChanged?.Invoke(countStrategy.Count(pickedDices));
+		}
+
+		private void SubscribeEvents()
+		{
+			foreach (var dice in dices)
+			{
+				dice.DiceSelect.AllowSelect = true;
+				dice.OnSelected += PickDice;
+			}
+		}
+
+		public void Dispose()
+		{
+			foreach (var dice in dices)
+			{
+				dice.DiceSelect.AllowSelect = false;
+				dice.OnSelected -= PickDice;
+			}
 		}
 	}
 }
