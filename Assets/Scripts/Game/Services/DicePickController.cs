@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Dices;
 using Game.Models;
 using Game.Services.ScoreCountStrategies;
@@ -96,7 +95,7 @@ namespace Game.Services
 
 		public bool AnyCombinationOnTable()
 		{
-			return countStrategy.HasCombinations(dices.Active.Select(t => t.Dice));
+			return countStrategy.HasCombinations(dices.Active);
 		}
 	}
 }

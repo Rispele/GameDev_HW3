@@ -26,9 +26,9 @@ namespace Game.Services
 				return;
 			}
 
-			foreach (var diceRoller in diceContainer.Active)
+			foreach (var dice in diceContainer.Active)
 			{
-				diceRoller.Roll();
+				dice.DiceRoller.Roll();
 			}
 		}
 
@@ -39,7 +39,7 @@ namespace Game.Services
 				return;
 			}
 
-			if (diceContainer.Active.Select(t => t.Dice.GetCurrentScore()).Any(t => t is null))
+			if (diceContainer.Active.Select(t => t.GetCurrentScore()).Any(t => t is null))
 			{
 				DicesRollFailure?.Invoke(diceContainer);
 			}
@@ -51,17 +51,17 @@ namespace Game.Services
 
 		private void SubscribeEvents()
 		{
-			foreach (var diceRoller in diceContainer)
+			foreach (var dice in diceContainer)
 			{
-				diceRoller.Rolled += DiceRolled;
+				dice.DiceRoller.Rolled += DiceRolled;
 			}
 		}
 
 		public void Dispose()
 		{
-			foreach (var diceRoller in diceContainer)
+			foreach (var dice in diceContainer)
 			{
-				diceRoller.Rolled -= DiceRolled;
+				dice.DiceRoller.Rolled -= DiceRolled;
 			}
 		}
 	}

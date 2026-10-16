@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Dices.Rolling;
+using Dices;
 using Dices.Rolling.RollingStrategies;
 using Game.Models;
 using UnityEngine;
@@ -9,11 +9,12 @@ namespace Game
 	public class DicesSpawner : MonoBehaviour
 	{
 		[SerializeField] private Transform diceParent;
-		[SerializeField, Min(1)] private int diceCount;
-		[SerializeField] private GameObject dicePrefab;
+		[SerializeField] private Dice dicePrefab;
+
+		[field: SerializeField, Range(1, 12)] public int DiceCount { get; set; } = 6;
 
 		public DiceContainer Dices { get; private set; }
-
+		
 		public void OnEnable()
 		{
 			if (Dices is not null)
@@ -21,14 +22,14 @@ namespace Game
 				return;
 			}
 
-			var dices = new DiceRoller[diceCount];
+			var dices = new Dice[DiceCount];
 
-			for (var i = 0; i < diceCount; i++)
+			for (var i = 0; i < DiceCount; i++)
 			{
-				var dice = Instantiate(dicePrefab, new Vector3(i * 2, 1, i * 2), Quaternion.identity).GetComponent<DiceRoller>();
+				var dice = Instantiate(dicePrefab, new Vector3(i * 2, 1, i * 2), Quaternion.identity);
 
 				dice.transform.SetParent(diceParent);
-				dice.RollingStrategy = new CenterDirectedRollingStrategy();
+				dice.DiceRoller.RollingStrategy = new CenterDirectedRollingStrategy();
 
 				dices[i] = dice;
 			}

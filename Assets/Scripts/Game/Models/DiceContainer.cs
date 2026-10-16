@@ -1,23 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Dices;
 using Dices.Rolling;
 
 namespace Game.Models
 {
-	public class DiceContainer : IEnumerable<DiceRoller>
+	public class DiceContainer : IEnumerable<Dice>
 	{
-		private readonly DiceRoller[] dicesRollers;
+		private readonly Dice[] dicesRollers;
 
-		public bool AnyDiceRolling => dicesRollers.Any(t => t.State is DiceRollState.Rolling);
-		public IEnumerable<DiceRoller> Active => dicesRollers.Where(t => t.gameObject.activeSelf);
+		public bool AnyDiceRolling => dicesRollers.Any(t => t.DiceRoller.State is DiceRollState.Rolling);
+		public IEnumerable<Dice> Active => dicesRollers.Where(t => t.gameObject.activeSelf);
 
-		public DiceContainer(DiceRoller[] dicesRollers)
+		public DiceContainer(Dice[] dicesRollers)
 		{
 			this.dicesRollers = dicesRollers;
 		}
 
-		public IEnumerator<DiceRoller> GetEnumerator()
+		public IEnumerator<Dice> GetEnumerator()
 		{
 			return dicesRollers.AsEnumerable().GetEnumerator();
 		}

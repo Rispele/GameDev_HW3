@@ -319,6 +319,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Roller.DiceRoller
   <State>k__BackingField: 0
+  rigidbody: {fileID: 309204298066427270}
 --- !u!114 &7568207409930625882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,6 +345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f4ade5457ae455b91e51a4e3a649aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dices.DiceSelect
+  <AllowSelect>k__BackingField: 0
 --- !u!1 &5529488255290842869
 GameObject:
   m_ObjectHideFlags: 0
