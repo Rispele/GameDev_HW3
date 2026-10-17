@@ -809,7 +809,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.54133546, y: -0, z: -0, w: 0.8408068}
-  m_LocalPosition: {x: 0, y: 32.88, z: -18.02}
+  m_LocalPosition: {x: 0, y: 37.56, z: -20.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -906,6 +906,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.DicesSpawner
   diceParent: {fileID: 37943602}
   dicePrefab: {fileID: 4502927528579310738, guid: d02d5c77cb5cb964a93531eb9c87ed1e, type: 3}
+  spawnRadius: 5
 --- !u!4 &388449532
 Transform:
   m_ObjectHideFlags: 0

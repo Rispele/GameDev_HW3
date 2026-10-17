@@ -10,6 +10,7 @@ namespace Game
 	{
 		[SerializeField] private Transform diceParent;
 		[SerializeField] private Dice dicePrefab;
+		[SerializeField, Min(0.1f)] private float spawnRadius = 5f;
 
 		private readonly List<DiceContainer> containersToDestroy = new();
 
@@ -18,7 +19,9 @@ namespace Game
 			var dices = new List<Dice>();
 			for (var i = 0; i < diceCount; i++)
 			{
-				var dice = Instantiate(dicePrefab, new Vector3(0, 1, 0), Quaternion.identity);
+				var angle = i * Mathf.PI * 2f / diceCount;
+				var spawnPosition = new Vector3(Mathf.Cos(angle) * spawnRadius, 1f, Mathf.Sin(angle) * spawnRadius);
+				var dice = Instantiate(dicePrefab, spawnPosition, Quaternion.identity);
 
 				dice.transform.SetParent(diceParent);
 				dice.DiceRoller.RollingStrategy = diceRollingStrategy;
